@@ -1,0 +1,80 @@
+version: '3'
+services:
+
+  ## Config Servers
+  config01:
+    image: mongo:6.0.2
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  config02:
+    image: mongo:6.0.2
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  config03:
+    image: mongo:6.0.2
+    command: mongod --port 27017 --configsvr --replSet configserver --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+
+  ## Shards
+  shard01a:
+    image: mongo:6.0.2
+    command: mongod --port 27018 --shardsvr --replSet shard01 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  shard01b:
+    image: mongo:6.0.2
+    command: mongod --port 27018 --shardsvr --replSet shard01 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  shard02a:
+    image: mongo:6.0.2
+    command: mongod --port 27019 --shardsvr --replSet shard02 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  shard02b:
+    image: mongo:6.0.2
+    command: mongod --port 27019 --shardsvr --replSet shard02 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  shard03a:
+    image: mongo:6.0.2
+    command: mongod --port 27020 --shardsvr --replSet shard03 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+  shard03b:
+    image: mongo:6.0.2
+    command: mongod --port 27020 --shardsvr --replSet shard03 --keyFile /srv/mongosecret --dbpath /data/db
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+
+  ## Router
+  router:
+    image: mongo:6.0.2
+    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017 --bind_ip_all --keyFile /srv/mongosecret
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./mongosecret:/srv/mongosecret
+    depends_on:
+      - config01
+      - config02
+      - config03
+      - shard01a
+      - shard01b
+      - shard02a
+      - shard02b
+      - shard03a
+      - shard03b
