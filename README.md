@@ -1,6 +1,6 @@
 # MongoDB Sharded Cluster Quickstart
 Set up a minimal MongoDB sharded cluster with a replication factor of 2 with docker-compose (only for development environment).
-
+<img src="https://user-images.githubusercontent.com/50090692/199514988-a81b18ee-b07c-4e12-98bf-577c98bc685a.png" alt="" width="600"/>
 ### Components
 
 - Config Server (3-member replica set): `config01`,`config02`,`config03`
